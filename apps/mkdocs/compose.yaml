@@ -5,6 +5,6 @@ services:
     ports:
       - "10004:8000"
     volumes:
-      - ./mkdocs.yml:/docs/mkdocs.yml:ro
+      - ./config/mkdocs.yml:/docs/mkdocs.yml:ro
+      - ./config/assets:/docs/docs/_app_assets:ro
       - ../../home/docs:/docs/docs
-      - ./assets:/docs/docs/_app_assets:ro

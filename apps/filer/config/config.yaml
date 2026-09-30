@@ -5,5 +5,8 @@ server:
       config:
         defaultEnabled: true
 
+database:
+  path: /home/filebrowser/database/database.db
+
 auth:
   adminUsername: admin

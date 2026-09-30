@@ -8,9 +8,10 @@ services:
       - "10002:80"
 
     environment:
-      FILEBROWSER_CONFIG: "data/config.yaml"
+      FILEBROWSER_CONFIG: "/home/filebrowser/config.yaml"
       FILEBROWSER_ADMIN_PASSWORD: "admin"
 
     volumes:
       - ../../:/folder
-      - ./data:/home/filebrowser/data
+      - ./config/config.yaml:/home/filebrowser/config.yaml:ro
+      - ../../var/lib/filebrowser:/home/filebrowser/database

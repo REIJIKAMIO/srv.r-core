@@ -1,12 +1,12 @@
 services:
   web:
-    build: ./ui
+    build: ./apache
     container_name: r-core-ui
     restart: unless-stopped
     ports:
       - "10000:80"
     volumes:
-      - ./ui/layout:/var/www/html
+      - ../var/www/html:/var/www/html
     environment:
       DB_HOST: db
       DB_NAME: ${DB_NAME}
@@ -26,7 +26,7 @@ services:
       MARIADB_PASSWORD: ${DB_PASSWORD}
       MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
     volumes:
-      - r-core-main-db:/var/lib/mysql
+      - ../var/lib/mysql:/var/lib/mysql
       - ./db/init:/docker-entrypoint-initdb.d:ro
     healthcheck:
       test:
@@ -39,6 +39,3 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
-
-volumes:
-  r-core-main-db:
