@@ -1,0 +1,38 @@
+site_name: REIJI DOCS
+repo_url: http://192.168.1.200:10003
+repo_name: EDIT DOCS (CODE SERVER)
+
+theme:
+  name: material
+  logo: _app_assets/img/logo.png
+  language: ja
+  features:
+    - navigation.path
+    - navigation.tracking
+    - navigation.footer
+  font:
+    text: Zen Old Mincho
+  palette:
+    primary: white
+    accent: deep orange
+    scheme: default
+  icon:
+    repo: fontawesome/regular/pen-to-square
+
+markdown_extensions:
+  - pymdownx.snippets:
+      base_path:
+        - docs
+
+extra_css:
+  - _app_assets/css/main.css
+  - _app_assets/css/h2-pages.css
+
+extra_javascript:
+  - _app_assets/js/h2-pages.js
+
+plugins:
+  - search:
+  - blog:
+      blog_dir: 00_Journal
+      post_dir: "{blog}/posts"

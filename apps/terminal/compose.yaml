@@ -1,0 +1,16 @@
+services:
+  ttyd:
+    build: .
+    container_name: r-core-ttyd
+    hostname: R-CORE
+    restart: unless-stopped
+
+    ports:
+      - "10001:7681"
+    
+    volumes:
+      - ../../:/core
+    
+    working_dir: /core
+    
+    command: ttyd -W -t disableResizeOverlay=true bash

@@ -1,0 +1,16 @@
+services:
+  filebrowser:
+    image: gtstef/filebrowser:latest
+    container_name: r-core-filebrowser
+    restart: unless-stopped
+
+    ports:
+      - "10002:80"
+
+    environment:
+      FILEBROWSER_CONFIG: "data/config.yaml"
+      FILEBROWSER_ADMIN_PASSWORD: "admin"
+
+    volumes:
+      - ../../:/folder
+      - ./data:/home/filebrowser/data

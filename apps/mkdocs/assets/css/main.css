@@ -1,0 +1,57 @@
+html {
+	font-size: 1em;
+}
+
+h2 {
+	border-bottom: 1px solid;
+}
+
+h3 {
+	width: auto;
+	border-left: 3px solid black;
+	padding: 0.25rem 0.75rem;
+	background-color: whitesmoke;
+}
+
+h4 {
+	width: fit-content;
+	background-color: black;
+	color: white;
+	padding: 0.25rem 0.5rem;
+	font-size: 0.7rem;
+}
+
+h5, h6 {
+	border-bottom: 1px solid gainsboro;
+}
+
+p {
+	text-align: justify;
+}
+
+/**/
+.md-typeset a {
+	color: black;
+	text-decoration: underline;
+}
+
+/* ブログ形式表示のカスタマイズ */
+.md-post--excerpt {
+	margin-bottom: 1rem;
+}
+
+.md-post--excerpt:first-of-type {
+	margin-top: 2rem;
+}
+
+.md-post__content {
+	border-bottom: 1px solid gainsboro;
+
+	h2 {
+		border-bottom: unset;
+	}
+
+	h2>a {
+		text-decoration: unset;
+	}
+}

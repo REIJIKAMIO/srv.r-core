@@ -1,0 +1,10 @@
+services:
+  r-core-mkdocs:
+    image: squidfunk/mkdocs-material:9
+    restart: unless-stopped
+    ports:
+      - "10004:8000"
+    volumes:
+      - ./mkdocs.yml:/docs/mkdocs.yml:ro
+      - ../../home/docs:/docs/docs
+      - ./assets:/docs/docs/_app_assets:ro

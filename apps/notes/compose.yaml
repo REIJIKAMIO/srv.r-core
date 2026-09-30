@@ -1,0 +1,11 @@
+services:
+  notediscovery:
+    image: ghcr.io/gamosoft/notediscovery:latest
+    container_name: r-core-notediscovery
+    restart: unless-stopped
+
+    ports:
+      - "10005:8000"
+
+    volumes:
+      - ../../home/docs:/app/data

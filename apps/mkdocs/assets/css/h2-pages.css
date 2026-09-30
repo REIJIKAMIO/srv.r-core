@@ -1,0 +1,853 @@
+/* =========================================================
+   TOC 共通
+   ========================================================= */
+
+.page-toc {
+  display: flex;
+
+  flex-wrap: wrap;
+
+  align-items: center;
+
+  gap: 0.55rem;
+
+  width: 100%;
+
+  min-width: 0;
+
+  max-width: 100%;
+
+  box-sizing: border-box;
+
+  margin:
+    1rem 0 1.5rem;
+
+  padding:
+    0.2rem 0;
+}
+
+
+.page-toc-item {
+  flex:
+    0 0 auto;
+
+  appearance:
+    none;
+
+  border:
+    1px solid transparent;
+
+  border-radius:
+    999px;
+
+  padding:
+    0.5rem 0.85rem;
+
+  background:
+    transparent;
+
+  color:
+    inherit;
+
+  font:
+    inherit;
+
+  font-size:
+    0.86rem;
+
+  line-height:
+    1.3;
+
+  white-space:
+    nowrap;
+
+  cursor:
+    pointer;
+
+  opacity:
+    0.45;
+
+  transition:
+    opacity 0.15s ease,
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+
+.page-toc-item.active {
+  opacity:
+    1;
+
+  font-weight:
+    600;
+
+  background:
+    color-mix(
+      in srgb,
+      currentColor 8%,
+      transparent
+    );
+
+  border-color:
+    color-mix(
+      in srgb,
+      currentColor 15%,
+      transparent
+    );
+}
+
+
+.page-toc-item:focus-visible {
+  outline:
+    2px solid currentColor;
+
+  outline-offset:
+    2px;
+
+  opacity:
+    1;
+}
+
+
+/* =========================================================
+   PC
+   ========================================================= */
+
+.h2-pages {
+  display:
+    block;
+
+  width:
+    100%;
+
+  max-width:
+    100%;
+}
+
+
+.h2-pages__track {
+  display:
+    block;
+
+  width:
+    100%;
+}
+
+
+.h2-page {
+  display:
+    block;
+
+  width:
+    100%;
+
+  box-sizing:
+    border-box;
+
+  margin:
+    0 0 2.5rem;
+
+  padding:
+    0 0 2.5rem;
+
+  border-bottom:
+    1px solid
+    color-mix(
+      in srgb,
+      currentColor 7%,
+      transparent
+    );
+}
+
+
+.h2-page:last-child {
+  margin-bottom:
+    0;
+
+  padding-bottom:
+    0;
+
+  border-bottom:
+    0;
+}
+
+
+.h2-page__inner {
+  display:
+    flow-root;
+
+  width:
+    100%;
+}
+
+
+.h2-page__inner > h2 {
+  margin-top:
+    2rem;
+
+  margin-bottom:
+    1rem;
+}
+
+
+.h2-page:first-child
+.h2-page__inner > h2 {
+  margin-top:
+    0;
+}
+
+
+.page-indicator {
+  display:
+    none;
+}
+
+
+.reader-bottom-spacer {
+  display:
+    none;
+}
+
+
+/* =========================================================
+   スマホ
+   ========================================================= */
+
+@media screen
+and
+(max-width: 767px) {
+
+
+  /* ========================================
+     固定Footer
+     ======================================== */
+
+  .md-footer {
+    position:
+      fixed;
+
+    left:
+      0;
+
+    right:
+      0;
+
+    bottom:
+      0;
+
+    width:
+      auto;
+
+    z-index:
+      20;
+
+    box-sizing:
+      border-box;
+  }
+
+
+  .md-footer-meta {
+    display:
+      none;
+  }
+
+
+  /* ========================================
+     通常ページ / ブログ
+     Footer潜り込み防止
+     ======================================== */
+
+  .md-main__inner {
+    padding-bottom:
+      calc(
+        var(
+          --mobile-footer-height,
+          0px
+        )
+        +
+        1.5rem
+      ) !important;
+  }
+
+
+  /* ========================================
+     Readerページ
+     独自Spacerを使う
+     ======================================== */
+
+  .h2-reader-active
+  .md-main__inner {
+    padding-bottom:
+      0 !important;
+  }
+
+
+  /* ========================================
+     Readerページの
+     横方向document overflow防止
+     ======================================== */
+
+  .h2-reader-active
+  .md-main,
+
+  .h2-reader-active
+  .md-main__inner,
+
+  .h2-reader-active
+  .md-content,
+
+  .h2-reader-active
+  .md-content__inner {
+    min-width:
+      0;
+
+    max-width:
+      100%;
+
+    box-sizing:
+      border-box;
+  }
+
+
+  .h2-reader-active
+  body {
+    overflow-x:
+      hidden;
+  }
+
+
+  /* ========================================
+     TOC
+     ======================================== */
+
+  .page-toc {
+    flex-wrap:
+      nowrap;
+
+    overflow-x:
+      auto;
+
+    overflow-y:
+      hidden;
+
+    gap:
+      0.45rem;
+
+    margin:
+      0.75rem
+      0
+      1rem;
+
+    padding:
+      0.25rem
+      0
+      0.35rem;
+
+    scrollbar-width:
+      none;
+
+    overscroll-behavior-x:
+      contain;
+
+    touch-action:
+      pan-x;
+  }
+
+
+  .page-toc::-webkit-scrollbar {
+    display:
+      none;
+  }
+
+
+  .page-toc-item {
+    flex:
+      0 0 auto;
+
+    padding:
+      0.45rem
+      0.75rem;
+
+    font-size:
+      0.82rem;
+  }
+
+
+  /* ========================================
+     Reader viewport
+     ======================================== */
+
+  .h2-pages {
+    position:
+      relative;
+
+    width:
+      100%;
+
+    min-width:
+      0;
+
+    max-width:
+      100%;
+
+    box-sizing:
+      border-box;
+
+    overflow:
+      hidden;
+
+    /*
+     * 縦方向は普通のwindow scrollへ。
+     *
+     * 横方向はJSで処理。
+     */
+    touch-action:
+      pan-y;
+
+    overscroll-behavior-x:
+      contain;
+
+    overflow-anchor:
+      none;
+  }
+
+
+  /* ========================================
+     横スライドtrack
+     ======================================== */
+
+  .h2-pages__track {
+    display:
+      flex;
+
+    align-items:
+      stretch;
+
+    width:
+      100%;
+
+    height:
+      100%;
+
+    box-sizing:
+      border-box;
+
+    transform:
+      translate3d(0, 0, 0);
+
+    will-change:
+      transform;
+
+    overflow-anchor:
+      none;
+  }
+
+
+  .h2-pages__track.is-animating {
+    transition:
+      transform 0.24s ease;
+  }
+
+
+  /* ========================================
+     各ページ
+     ======================================== */
+
+  .h2-page {
+    flex:
+      0 0 100%;
+
+    width:
+      100%;
+
+    min-width:
+      100%;
+
+    max-width:
+      100%;
+
+    height:
+      100%;
+
+    box-sizing:
+      border-box;
+
+    margin:
+      0;
+
+    padding:
+      0
+      0.25rem;
+
+    border:
+      0;
+
+    overflow:
+      hidden;
+
+    overflow-anchor:
+      none;
+  }
+
+
+  /*
+   * 短文ページでも
+   * innerの外側空白を含めて
+   * page全体がスワイプ対象
+   */
+
+  .h2-page__inner {
+    display:
+      flow-root;
+
+    width:
+      100%;
+
+    min-width:
+      0;
+
+    box-sizing:
+      border-box;
+
+    overflow-anchor:
+      none;
+  }
+
+
+  /* ========================================
+     H2はスマホでは非表示
+     ======================================== */
+
+  .h2-page__inner > h2 {
+    position:
+      absolute;
+
+    width:
+      1px;
+
+    height:
+      1px;
+
+    padding:
+      0;
+
+    margin:
+      -1px;
+
+    overflow:
+      hidden;
+
+    clip:
+      rect(
+        0,
+        0,
+        0,
+        0
+      );
+
+    clip-path:
+      inset(50%);
+
+    white-space:
+      nowrap;
+
+    border:
+      0;
+  }
+
+
+  /* ========================================
+     長文ページ用
+     下部安全余白
+     ======================================== */
+
+  .reader-bottom-spacer {
+    display:
+      block;
+
+    width:
+      100%;
+
+    height:
+      0;
+
+    margin:
+      0;
+
+    padding:
+      0;
+
+    pointer-events:
+      none;
+
+    overflow-anchor:
+      none;
+  }
+
+
+  /* ========================================
+     Indicator
+     ======================================== */
+
+  .page-indicator {
+    position:
+      fixed;
+
+    left:
+      0;
+
+    right:
+      0;
+
+    bottom:
+      var(
+        --mobile-footer-height,
+        4rem
+      );
+
+    width:
+      auto;
+
+    z-index:
+      21;
+
+    display:
+      flex;
+
+    align-items:
+      center;
+
+    justify-content:
+      center;
+
+    box-sizing:
+      border-box;
+
+    margin:
+      0;
+
+    padding:
+      0 1rem;
+
+    gap:
+      0.4rem;
+
+    min-height:
+      3rem;
+
+    background:
+      var(
+        --md-default-bg-color
+      );
+
+    color:
+      var(
+        --md-default-fg-color
+      );
+
+    border-top:
+      1px solid
+      color-mix(
+        in srgb,
+        currentColor 7%,
+        transparent
+      );
+  }
+
+
+  /* ========================================
+     01 / 03
+     ======================================== */
+
+  .page-number {
+    flex:
+      0 0 auto;
+
+    min-width:
+      1.5rem;
+
+    font-size:
+      0.65rem;
+
+    font-weight:
+      500;
+
+    line-height:
+      1;
+
+    letter-spacing:
+      0.08em;
+
+    text-align:
+      center;
+
+    opacity:
+      0.55;
+
+    user-select:
+      none;
+
+    -webkit-user-select:
+      none;
+  }
+
+
+  /* ========================================
+     Seek
+     ======================================== */
+
+  .page-track {
+    position:
+      relative;
+
+    flex:
+      1;
+
+    min-width:
+      0;
+
+    height:
+      3rem;
+
+    margin:
+      0
+      0.25rem;
+
+    outline:
+      none;
+
+    cursor:
+      grab;
+
+    user-select:
+      none;
+
+    -webkit-user-select:
+      none;
+
+    touch-action:
+      pan-y;
+  }
+
+
+  .page-track::before {
+    content:
+      "";
+
+    position:
+      absolute;
+
+    top:
+      50%;
+
+    left:
+      0;
+
+    width:
+      100%;
+
+    height:
+      1px;
+
+    background:
+      currentColor;
+
+    opacity:
+      0.3;
+
+    transform:
+      translateY(-50%);
+
+    transition:
+      opacity 0.15s ease,
+      height 0.15s ease;
+  }
+
+
+  .page-thumb {
+    position:
+      absolute;
+
+    top:
+      50%;
+
+    left:
+      0;
+
+    width:
+      0.7rem;
+
+    height:
+      0.7rem;
+
+    border-radius:
+      50%;
+
+    background:
+      currentColor;
+
+    transform:
+      translate(
+        -50%,
+        -50%
+      );
+
+    pointer-events:
+      none;
+
+    transition:
+      left 0.08s linear,
+      transform 0.15s ease;
+  }
+
+
+  .page-track.is-dragging {
+    cursor:
+      grabbing;
+  }
+
+
+  .page-track.is-dragging
+  .page-thumb {
+    transform:
+      translate(
+        -50%,
+        -50%
+      )
+      scale(1.3);
+  }
+
+
+  .page-track.is-dragging::before {
+    height:
+      2px;
+
+    opacity:
+      0.5;
+  }
+
+}
+
+
+/* =========================================================
+   モーション低減
+   ========================================================= */
+
+@media
+(prefers-reduced-motion: reduce) {
+
+  .page-toc {
+    scroll-behavior:
+      auto;
+  }
+
+
+  .h2-pages__track,
+  .page-thumb,
+  .page-track::before,
+  .page-toc-item {
+    transition:
+      none !important;
+  }
+
+}
