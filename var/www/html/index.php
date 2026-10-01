@@ -31,7 +31,7 @@
                     </div>
                 </div>
                 <div class="container-viewer r-box" id="container_viewer">
-                    <iframe src="http://192.168.1.200:8000/" frameborder="0" name="container-frame"></iframe>
+                    <iframe src="http://192.168.1.200:10004/" frameborder="0" name="container-frame"></iframe>
                 </div>
             </div>
         </div>

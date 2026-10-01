@@ -4,7 +4,7 @@
 ## レポート一覧
 日付ベースでレポートを積み上げる。日々のレポートはこちらに記載をし、それらをまとめたものを以下の研究内容部分に記載する。
 
-[一覧はこちら](/00_Journal/index.md)
+[一覧はこちら](/00_Journal/)
 
 ## 研究内容
 --8<-- "01_Projects/Laboratory/01_Research/index.md:contents"

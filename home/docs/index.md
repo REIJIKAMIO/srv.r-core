@@ -3,7 +3,16 @@
 自分の情報等を管理するドキュメンツ。
 
 ## 00 ジャーナル
-[ジャーナルはこちら](./00_Journal)
+ジャーナル。[一覧はこちら。](./00_Journal)
+
+### カテゴリ
+- [Develop](./00_Journal/category/develop/)
+- [Diary](./00_Journal/category/diary/)
+- [LIVE](./00_Journal/category/live/)
+- [Music](./00_Journal/category/music/)
+- [Pleasant](./00_Journal/category/pleasant/)
+- [Business](./00_Journal/category/ビジネス/)
+- [調査してみたいこと](./00_Journal/category/調査してみたいこと/)
 
 ## 01 プロジェクト
 --8<-- "./01_Projects/index.md:contents"
@@ -25,4 +34,3 @@
 ### 利用中サービス
 * [GitHub](https://github.com/REIJIKAMIO/)
 
-<!-- mdnest:65701df7-d222-470c-a2b8-1b1fc9055105 -->

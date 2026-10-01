@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>REI Knowledge Inbox</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 12px;
+            font-family: sans-serif;
+            background: #fff;
+            color: #111;
+        }
+
+        h1 {
+            margin: 0 0 12px;
+            font-size: 20px;
+        }
+
+        .layout {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            gap: 12px;
+            min-height: calc(100vh - 60px);
+        }
+
+        .panel {
+            border: 1px solid #999;
+            border-radius: 8px;
+            padding: 10px;
+            overflow: auto;
+        }
+
+        .proposal {
+            width: 100%;
+            display: block;
+            text-align: left;
+            padding: 8px;
+            margin-bottom: 6px;
+            border: 1px solid #ccc;
+            background: #fff;
+            cursor: pointer;
+            border-radius: 6px;
+        }
+
+        .proposal:hover {
+            background: #f3f3f3;
+        }
+
+        .proposal-title {
+            font-weight: bold;
+        }
+
+        .proposal-source {
+            margin-top: 4px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .meta {
+            font-size: 13px;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        pre {
+            white-space: pre-wrap;
+            word-break: break-word;
+            font-family: monospace;
+            font-size: 13px;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        button {
+            padding: 7px 12px;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .empty {
+            color: #777;
+        }
+
+        @media (max-width: 700px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .scan-box {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .scan-box input {
+            width: 80px;
+            padding: 7px;
+        }
+
+        #scan-status {
+            font-size: 13px;
+            color: #666;
+        }
+        .chat-panel {
+            margin-top: 12px;
+        }
+
+        #chat-log {
+            min-height: 180px;
+            max-height: 400px;
+            overflow-y: auto;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            padding: 10px;
+            margin-bottom: 10px;
+            background: #fafafa;
+        }
+
+        .chat-message {
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        .chat-message.user {
+            text-align: right;
+        }
+
+        .chat-message.rei {
+            text-align: left;
+        }
+
+        .chat-name {
+            font-size: 12px;
+            color: #777;
+            margin-bottom: 2px;
+        }
+
+        .chat-body {
+            display: inline-block;
+            max-width: 80%;
+            padding: 8px 10px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            white-space: pre-wrap;
+            word-break: break-word;
+            text-align: left;
+            background: #fff;
+        }
+
+        .chat-input {
+            display: flex;
+            gap: 8px;
+        }
+
+        .chat-input textarea {
+            flex: 1;
+            resize: vertical;
+            padding: 8px;
+        }
+
+        .chat-input button {
+            width: 80px;
+        }
+    </style>
+</head>
+
+<body>
+
+<h1>REI Knowledge Inbox</h1>
+<div class="scan-box">
+    <input
+        id="scan-limit"
+        type="number"
+        min="1"
+        value="2"
+    >
+
+    <button id="scan-button" onclick="scanDocs()">
+        指定件数スキャン
+    </button>
+
+    <button id="scan-all-button" onclick="scanAllDocs()">
+        全件スキャン
+    </button>
+
+    <span id="scan-status"></span>
+</div>
+<div class="layout">
+
+    <div class="panel">
+        <div id="proposal-list">
+            読み込み中...
+        </div>
+    </div>
+
+    <div class="panel">
+        <div id="detail">
+            左から提案を選択してください。
+        </div>
+    </div>
+
+</div>
+<div class="panel chat-panel">
+    <h2>REI Chat</h2>
+
+    <div id="chat-log"></div>
+
+    <div class="chat-input">
+        <textarea
+            id="chat-message"
+            rows="3"
+            placeholder="REIに話しかける..."
+        ></textarea>
+
+        <button id="chat-send-button" onclick="sendChat()">
+            送信
+        </button>
+    </div>
+</div>
+<script>
+const API_BASE = "";
+
+let currentId = null;
+
+
+/* -----------------------------
+   提案一覧
+----------------------------- */
+
+async function loadProposals() {
+    const response = await fetch(`${API_BASE}/knowledge/proposals`);
+    const data = await response.json();
+
+    const list = document.getElementById("proposal-list");
+
+    list.innerHTML = "";
+
+    if (!data.proposals || data.proposals.length === 0) {
+        list.innerHTML = `<div class="empty">提案はありません。</div>`;
+        return;
+    }
+
+    data.proposals.forEach(item => {
+
+        const button = document.createElement("button");
+
+        button.className = "proposal";
+
+        button.innerHTML = `
+            <div class="proposal-title">
+                ${escapeHtml(item.title || item.id)}
+            </div>
+
+            <div class="proposal-source">
+                ${escapeHtml(item.source || "")}
+            </div>
+        `;
+
+        button.addEventListener("click", () => {
+            loadProposal(item.id);
+        });
+
+        list.appendChild(button);
+    });
+}
+
+
+/* -----------------------------
+   詳細
+----------------------------- */
+
+async function loadProposal(id) {
+    currentId = id;
+
+    const response = await fetch(
+        `${API_BASE}/knowledge/proposals/${encodeURIComponent(id)}`
+    );
+
+    const data = await response.json();
+
+    const detail = document.getElementById("detail");
+
+    if (data.status !== "ok") {
+        detail.innerHTML = `
+            <p>読み込み失敗</p>
+            <pre>${escapeHtml(JSON.stringify(data, null, 2))}</pre>
+        `;
+        return;
+    }
+
+    const meta = data.metadata || {};
+
+    detail.innerHTML = `
+        <div class="actions">
+            <button onclick="approveProposal()">
+                承認
+            </button>
+
+            <button onclick="rejectProposal()">
+                却下
+            </button>
+        </div>
+
+        <div class="meta">
+            <div><strong>ID:</strong> ${escapeHtml(id)}</div>
+            <div><strong>タイトル:</strong> ${escapeHtml(meta.title || "")}</div>
+            <div><strong>元資料:</strong> ${escapeHtml(meta.source || "")}</div>
+            <div><strong>保存先候補:</strong> ${escapeHtml(meta.suggested_path || "")}</div>
+        </div>
+
+        <pre>${escapeHtml(data.content || "")}</pre>
+    `;
+}
+
+
+/* -----------------------------
+   承認
+----------------------------- */
+
+async function approveProposal() {
+    if (!currentId) return;
+
+    if (!confirm("この提案を承認しますか？")) {
+        return;
+    }
+
+    const response = await fetch(
+        `${API_BASE}/knowledge/proposals/${encodeURIComponent(currentId)}/approve`,
+        {
+            method: "POST"
+        }
+    );
+
+    const data = await response.json();
+
+    alert(JSON.stringify(data, null, 2));
+
+    currentId = null;
+
+    document.getElementById("detail").innerHTML =
+        "左から提案を選択してください。";
+
+    await loadProposals();
+}
+
+
+/* -----------------------------
+   却下
+----------------------------- */
+
+async function rejectProposal() {
+    if (!currentId) return;
+
+    if (!confirm("この提案を却下しますか？")) {
+        return;
+    }
+
+    const response = await fetch(
+        `${API_BASE}/knowledge/proposals/${encodeURIComponent(currentId)}/reject`,
+        {
+            method: "POST"
+        }
+    );
+
+    const data = await response.json();
+
+    alert(JSON.stringify(data, null, 2));
+
+    currentId = null;
+
+    document.getElementById("detail").innerHTML =
+        "左から提案を選択してください。";
+
+    await loadProposals();
+}
+
+
+/* -----------------------------
+   HTMLエスケープ
+----------------------------- */
+
+function escapeHtml(value) {
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+}
+
+
+loadProposals();
+
+
+/* scan */
+async function scanAllDocs() {
+    if (!confirm("未処理・更新済みのdocsをすべてスキャンしますか？")) {
+        return;
+    }
+
+    await runScan(null);
+}
+
+
+async function scanDocs() {
+    const input = document.getElementById("scan-limit");
+    const limit = Number(input.value);
+
+    if (!Number.isInteger(limit) || limit < 1) {
+        alert("1以上の件数を指定してください。");
+        return;
+    }
+
+    await runScan(limit);
+}
+
+
+async function runScan(limit) {
+    const status = document.getElementById("scan-status");
+    const scanButton = document.getElementById("scan-button");
+    const scanAllButton = document.getElementById("scan-all-button");
+
+    // スキャン中表示
+    status.textContent = "スキャン中...";
+
+    scanButton.disabled = true;
+    scanAllButton.disabled = true;
+
+    scanButton.textContent = "スキャン中...";
+    scanAllButton.textContent = "スキャン中...";
+
+    try {
+        let url = `${API_BASE}/knowledge/scan`;
+
+        if (limit !== null) {
+            url += `?limit=${limit}`;
+        }
+
+        const response = await fetch(
+            url,
+            {
+                method: "POST"
+            }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(JSON.stringify(data));
+        }
+
+        status.textContent =
+            `完了: ${data.processed_count}件 / ` +
+            `スキップ: ${data.skipped_count}件 / ` +
+            `エラー: ${data.error_count}件`;
+
+        await loadProposals();
+
+    } catch (error) {
+        console.error(error);
+
+        status.textContent = "エラー";
+
+        alert(
+            "スキャンに失敗しました。\n\n" +
+            error.message
+        );
+
+    } finally {
+        scanButton.disabled = false;
+        scanAllButton.disabled = false;
+
+        scanButton.textContent = "指定件数スキャン";
+        scanAllButton.textContent = "全件スキャン";
+    }
+}
+
+async function sendChat() {
+    const textarea = document.getElementById("chat-message");
+    const button = document.getElementById("chat-send-button");
+
+    const message = textarea.value.trim();
+
+    if (!message) {
+        return;
+    }
+
+    appendChatMessage("user", "あなた", message);
+
+    textarea.value = "";
+    button.disabled = true;
+    button.textContent = "返答待ち...";
+
+    appendChatMessage("rei", "REI", "考え中...", "thinking-message");
+
+    try {
+        const response = await fetch(
+            `${API_BASE}/chat`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    message: message
+                })
+            }
+        );
+
+        const data = await response.json();
+
+        removeThinkingMessage();
+
+        if (!response.ok) {
+            throw new Error(JSON.stringify(data));
+        }
+
+        appendChatMessage(
+            "rei",
+            "REI",
+            data.reply || "(返答なし)"
+        );
+
+    } catch (error) {
+        removeThinkingMessage();
+
+        appendChatMessage(
+            "rei",
+            "REI",
+            "エラーが発生しました。\n" + error.message
+        );
+
+    } finally {
+        button.disabled = false;
+        button.textContent = "送信";
+        textarea.focus();
+    }
+}
+
+
+function appendChatMessage(type, name, message, extraId = null) {
+    const log = document.getElementById("chat-log");
+
+    const wrapper = document.createElement("div");
+
+    wrapper.className = `chat-message ${type}`;
+
+    if (extraId) {
+        wrapper.id = extraId;
+    }
+
+    wrapper.innerHTML = `
+        <div class="chat-name">
+            ${escapeHtml(name)}
+        </div>
+
+        <div class="chat-body">
+            ${escapeHtml(message)}
+        </div>
+    `;
+
+    log.appendChild(wrapper);
+
+    log.scrollTop = log.scrollHeight;
+}
+
+function removeThinkingMessage() {
+    const element = document.getElementById("thinking-message");
+
+    if (element) {
+        element.remove();
+    }
+}
+
+document
+    .getElementById("chat-message")
+    .addEventListener("keydown", function(event) {
+
+        if (
+            event.key === "Enter" &&
+            !event.shiftKey
+        ) {
+            event.preventDefault();
+            sendChat();
+        }
+    });
+</script>
+
+</body>
+</html>

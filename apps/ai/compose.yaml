@@ -1,0 +1,31 @@
+services:
+  ai:
+    build: .
+    container_name: r-core-ai
+    restart: unless-stopped
+
+    ports:
+      - "10010:8000"
+
+    volumes:
+      - ../../home/docs:/home/docs:ro
+      - ../../home/knowledge:/home/knowledge
+      - ../../home/knowledge-inbox:/home/knowledge-inbox
+      - ../../home/knowledge-rejected:/home/knowledge-rejected
+      - ../../var/lib/ai:/var/lib/ai
+
+    environment:
+      OLLAMA_URL: http://r-core-ollama:11434
+      QDRANT_URL: http://qdrant:6333
+      CHAT_MODEL: qwen2.5:1.5b
+      REI_REACTION_MODEL: qwen2.5:1.5b
+      REI_NORMAL_MODEL: qwen2.5:1.5b
+      REI_THINK_MODEL: qwen3:4b
+      REI_DEEP_MODEL: qwen3:4b
+
+    networks:
+      - r-core-ai
+
+networks:
+  r-core-ai:
+    external: true

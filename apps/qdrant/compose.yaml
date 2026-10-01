@@ -1,0 +1,18 @@
+services:
+  qdrant:
+    image: qdrant/qdrant:latest
+    container_name: r-core-qdrant
+    restart: unless-stopped
+
+    ports:
+      - "6333:6333"
+
+    volumes:
+      - ../../var/lib/qdrant:/qdrant/storage
+
+    networks:
+      - r-core-ai
+
+networks:
+  r-core-ai:
+    external: true

@@ -11,6 +11,12 @@
     <a href="http://192.168.1.200:10004/" target="container-frame" class="bookbtn internal">mkdocs</a>
 </div>
 <div class="nav-book r-box">
+    <a href="http://192.168.1.200:10006/" target="container-frame" class="bookbtn internal">obsidian</a>
+</div>
+<div class="nav-book r-box">
+    <a href="http://192.168.1.200:10010/ui" target="container-frame" class="bookbtn internal">REI Knowledge Inbox</a>
+</div>
+<div class="nav-book r-box">
     <a href="http://192.168.1.200:8000/" target="container-frame" class="bookbtn internal">> REIJI DOCS</a>
 </div>
 <div class="nav-book r-box">

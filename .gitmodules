@@ -1,0 +1,3 @@
+[submodule "apps/obsidian"]
+	path = apps/obsidian
+	url = https://github.com/xnohat/webobsidian.git

@@ -1,0 +1,18 @@
+services:
+  ollama:
+    image: ollama/ollama:latest
+    container_name: r-core-ollama
+    restart: unless-stopped
+
+    ports:
+      - "21434:11434"
+
+    volumes:
+      - ../../var/lib/ollama:/root/.ollama
+
+    networks:
+      - r-core-ai
+
+networks:
+  r-core-ai:
+    external: true
