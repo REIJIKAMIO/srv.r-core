@@ -8,7 +8,7 @@ services:
       - "21434:11434"
 
     volumes:
-      - ../../var/lib/ollama:/root/.ollama
+      - ../../../var/lib/ollama:/root/.ollama
 
     networks:
       - r-core-ai

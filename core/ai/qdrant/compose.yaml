@@ -8,7 +8,7 @@ services:
       - "6333:6333"
 
     volumes:
-      - ../../var/lib/qdrant:/qdrant/storage
+      - ../../../var/lib/qdrant:/qdrant/storage
 
     networks:
       - r-core-ai

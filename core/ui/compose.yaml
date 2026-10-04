@@ -6,7 +6,7 @@ services:
     ports:
       - "10000:80"
     volumes:
-      - ../var/www/html:/var/www/html
+      - ./htdocs:/var/www/html
     environment:
       DB_HOST: db
       DB_NAME: ${DB_NAME}
@@ -26,7 +26,7 @@ services:
       MARIADB_PASSWORD: ${DB_PASSWORD}
       MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
     volumes:
-      - ../var/lib/mysql:/var/lib/mysql
+      - ../../var/lib/mysql:/var/lib/mysql
       - ./db/init:/docker-entrypoint-initdb.d:ro
     healthcheck:
       test:
