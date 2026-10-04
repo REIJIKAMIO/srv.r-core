@@ -1,37 +1,46 @@
 import os
-import requests
-
+from ollama_client import ollama_post
 from qdrant_client import QdrantClient
 from qdrant_client.models import (
     Distance,
     VectorParams,
-    PointStruct,
+    PointStruct
 )
 
 from knowledge import load_markdown_files
 
 
-OLLAMA_URL = os.getenv("OLLAMA_URL", "http://ollama:11434")
-QDRANT_URL = os.getenv("QDRANT_URL", "http://qdrant:6333")
+QDRANT_URL = os.getenv(
+    "QDRANT_URL",
+    "http://qdrant:6333"
+)
 
-EMBEDDING_MODEL = "qwen3-embedding:0.6b"
-COLLECTION_NAME = "rei_knowledge"
+EMBEDDING_MODEL = os.getenv(
+    "EMBEDDING_MODEL",
+    "qwen3-embedding:0.6b"
+)
+
+COLLECTION_NAME = os.getenv(
+    "QDRANT_COLLECTION",
+    "rei_memory"
+)
 
 
-client = QdrantClient(url=QDRANT_URL)
+client = QdrantClient(
+    url=QDRANT_URL
+)
 
 
 def embed(text: str):
-    response = requests.post(
-        f"{OLLAMA_URL}/api/embed",
-        json={
+
+    response, backend = ollama_post(
+        "/api/embed",
+        payload={
             "model": EMBEDDING_MODEL,
             "input": text
         },
         timeout=120
     )
-
-    response.raise_for_status()
 
     data = response.json()
 
@@ -39,6 +48,11 @@ def embed(text: str):
 
 
 def rebuild_index():
+    """
+    docs / knowledge / canon をすべて読み込み、
+    Qdrantのcollectionを作り直す。
+    """
+
     files = load_markdown_files()
 
     if not files:
@@ -47,15 +61,20 @@ def rebuild_index():
             "count": 0
         }
 
-    # 最初の文書でベクトル次元数を確認
+    # 最初のファイルでEmbedding次元数を確認
     first_vector = embed(files[0]["text"])
 
     vector_size = len(first_vector)
 
-    # collectionを作り直す
-    if client.collection_exists(COLLECTION_NAME):
-        client.delete_collection(COLLECTION_NAME)
+    # 既存collectionを削除
+    if client.collection_exists(
+        COLLECTION_NAME
+    ):
+        client.delete_collection(
+            COLLECTION_NAME
+        )
 
+    # collection再作成
     client.create_collection(
         collection_name=COLLECTION_NAME,
         vectors_config=VectorParams(
@@ -67,18 +86,50 @@ def rebuild_index():
     points = []
 
     for i, file in enumerate(files):
-        vector = embed(file["text"])
 
-        points.append(
-            PointStruct(
-                id=i,
-                vector=vector,
-                payload={
-                    "path": file["path"],
-                    "text": file["text"]
-                }
+        try:
+            vector = embed(
+                file["text"]
             )
-        )
+
+            points.append(
+                PointStruct(
+                    id=i,
+                    vector=vector,
+                    payload={
+                        "source_type": file[
+                            "source_type"
+                        ],
+                        "path": file[
+                            "path"
+                        ],
+                        "text": file[
+                            "text"
+                        ]
+                    }
+                )
+            )
+
+            print(
+                "[indexer] indexed:",
+                file["source_type"],
+                file["path"]
+            )
+
+        except Exception as e:
+            print(
+                "[indexer] failed:",
+                file["source_type"],
+                file["path"],
+                e
+            )
+
+    if not points:
+        return {
+            "status": "error",
+            "count": 0,
+            "message": "No files could be indexed"
+        }
 
     client.upsert(
         collection_name=COLLECTION_NAME,
@@ -87,11 +138,19 @@ def rebuild_index():
 
     return {
         "status": "ok",
-        "count": len(points)
+        "count": len(points),
+        "collection": COLLECTION_NAME
     }
 
 
-def search_knowledge(query: str, limit: int = 3):
+def search_knowledge(
+    query: str,
+    limit: int = 5
+):
+    """
+    Qdrantから意味的に近い資料を検索する。
+    """
+
     vector = embed(query)
 
     results = client.query_points(
@@ -104,8 +163,21 @@ def search_knowledge(query: str, limit: int = 3):
     return [
         {
             "score": result.score,
-            "path": result.payload.get("path"),
-            "text": result.payload.get("text")
+
+            "source_type":
+                result.payload.get(
+                    "source_type"
+                ),
+
+            "path":
+                result.payload.get(
+                    "path"
+                ),
+
+            "text":
+                result.payload.get(
+                    "text"
+                )
         }
         for result in results
     ]

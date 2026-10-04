@@ -8,18 +8,26 @@ services:
       - "10010:8000"
 
     volumes:
+      - ./sources.yaml:/app/sources.yaml:ro
       - ../../home/docs:/home/docs:ro
       - ../../home/knowledge:/home/knowledge
-      - ../../home/knowledge-inbox:/home/knowledge-inbox
-      - ../../home/knowledge-rejected:/home/knowledge-rejected
+      - ../../home/memory:/home/memory
+      - ../../home/canon:/home/canon:ro
+      - ../../home/recommendations:/home/recommendations
       - ../../var/lib/ai:/var/lib/ai
 
     environment:
-      OLLAMA_URL: http://r-core-ollama:11434
+      OLLAMA_GPU_URL: http://192.168.1.99:11434
+      OLLAMA_CPU_URL: http://r-core-ollama:11434
       QDRANT_URL: http://qdrant:6333
       CHAT_MODEL: qwen2.5:1.5b
+
+      ACTIVE_PERSONA: rei
+      SUBJECT_PERSONA: reiji
+
       REI_REACTION_MODEL: qwen2.5:1.5b
       REI_NORMAL_MODEL: qwen2.5:1.5b
+      REI_INFERENCE_MODEL: qwen2.5:3b
       REI_THINK_MODEL: qwen3:4b
       REI_DEEP_MODEL: qwen3:4b
 

@@ -7,7 +7,9 @@ RUN pip install \
     uvicorn \
     requests \
     qdrant-client \
-    python-multipart
+    python-multipart \
+    pyyaml \
+    beautifulsoup4
 
 COPY src /app
 

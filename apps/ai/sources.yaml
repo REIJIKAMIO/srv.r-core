@@ -1,0 +1,7 @@
+sources:
+  - name: and premium
+    url: https://andpremium.jp/
+    category: lifestyle/andpremium
+    mode: index
+    interval_hours: 24
+    max_articles: 5
